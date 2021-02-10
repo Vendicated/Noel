@@ -1,0 +1,33 @@
+{
+	"name": "noel",
+	"version": "0.1.0",
+	"description": "Yet Another Discord Bot",
+	"main": "dist/noel.js",
+	"scripts": {
+		"build": "tsc",
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/Vendicated/Noel.git"
+	},
+	"author": "Vendicated",
+	"license": "AGPL-3.0",
+	"bugs": {
+		"url": "https://github.com/Vendicated/Noel/issues"
+	},
+	"homepage": "https://github.com/Vendicated/Noel#readme",
+	"dependencies": {
+		"dotenv": "^8.2.0"
+	},
+	"devDependencies": {
+		"@types/node": "^14.14.25",
+		"@types/node-fetch": "^2.5.8",
+		"@typescript-eslint/eslint-plugin": "^4.15.0",
+		"@typescript-eslint/parser": "^4.15.0",
+		"eslint": "^7.19.0",
+		"eslint-config-prettier": "^7.2.0",
+		"eslint-plugin-promise": "^4.2.1",
+		"typescript": "^4.1.4"
+	}
+}
