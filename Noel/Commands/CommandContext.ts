@@ -34,6 +34,7 @@ export class CommandContext {
 		);
 
 		let prefix = regex.exec(msg.content)?.[0];
+		// Allow no prefix in dms
 		if (prefix === undefined && msg.guild) return null;
 		else prefix = "";
 

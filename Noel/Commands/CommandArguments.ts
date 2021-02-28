@@ -16,6 +16,7 @@ export async function parseArgs(command: Command, ctx: CommandContext) {
 	for (let i = 0, arg = command.args[i]; i < command.args.length; i++) {
 		const add = async (parser: (str: string) => Arg | null | Promise<Arg | null>) => {
 			let raw;
+            // Remainder
 			if (i === command.args.length - 1 && hasFlag(arg, ArgumentFlags.Remainder)) {
 				raw = ctx.rawArgs.slice(i).join(" ");
 			} else {
