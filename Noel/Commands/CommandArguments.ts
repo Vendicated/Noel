@@ -82,8 +82,8 @@ export enum ArgumentTypes {
 }
 
 export enum ArgumentFlags {
-	Remainder = 0x00000001,
-	Optional = 0x00000010
+	Remainder = 0b00000001,
+	Optional = 0b00000010
 }
 
 interface Argument<T = unknown> {
