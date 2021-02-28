@@ -68,7 +68,7 @@ export class CommandContext {
 		const msg = await this.msg.reply(question);
 		try {
 			const input = await this.channel.awaitMessages(this.filter, {
-				time,
+				time: time * 1000,
 				max: 1,
 				errors: ["time"]
 			});
