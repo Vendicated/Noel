@@ -6,10 +6,17 @@ import { channelParser, boolParser } from "../Util/parsers";
 
 export async function parseArgs(command: Command, ctx: CommandContext) {
 	const output: CommandArgs = {};
+
+	const requiredArgs = command.args.filter(arg => hasFlag(arg, ArgumentFlags.Optional)).length;
+	if (ctx.rawArgs.length < requiredArgs)
+		throw new ArgumentError(
+			`Too little arguments. Expected ${requiredArgs} but only received ${ctx.rawArgs.length}.`
+		);
+
 	for (let i = 0, arg = command.args[i]; i < command.args.length; i++) {
 		const add = async (parser: (str: string) => Arg | null | Promise<Arg | null>) => {
 			let raw;
-			if (i === command.args.length - 1 && arg.flags && arg.flags & ArgumentFlags.Remainder) {
+			if (i === command.args.length - 1 && hasFlag(arg, ArgumentFlags.Remainder)) {
 				raw = ctx.rawArgs.slice(i).join(" ");
 			} else {
 				raw = ctx.rawArgs[i];
@@ -25,7 +32,7 @@ export async function parseArgs(command: Command, ctx: CommandContext) {
 				throw new ArgumentError(
 					`Wrong argument ${raw}. Expected ${
 						arg.explanation || ArgumentTypes[(arg.type as unknown) as keyof typeof ArgumentTypes]
-					}`
+					}.`
 				);
 			}
 		};
@@ -97,4 +104,8 @@ class ArgumentError extends Error {
 		super(message);
 		this.name = "ArgumentError";
 	}
+}
+
+function hasFlag(arg: Argument, flag: ArgumentFlags) {
+	return typeof arg.flags === "number" && Boolean(arg.flags & flag);
 }
