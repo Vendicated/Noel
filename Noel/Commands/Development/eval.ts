@@ -17,6 +17,39 @@ export class Command extends NoelCommand {
 	public userPermissions = [];
 	public clientPermissions = [];
 
+	/**
+	 * Converts object to string.
+	 * If this string is larger than the provided limit, it is uploaded to hastebin, or attached as file if hastebin errors.
+	 * Otherwise it is wrapped into a codeblock.
+	 * @param {(object|string)} rawContent The object to format
+	 * @param {number} limit Upper limit
+	 * @param {object} messageOptions MessageOptions object to append files to
+	 * @param {string} altFilename Filename that should be given to this file
+	 */
+	public async formatOutput(rawContent: unknown, limit: number, messageOptions: MessageOptions, altFilename: string) {
+		if (!rawContent) return null;
+
+		if (typeof rawContent !== "string") {
+			rawContent = inspect(rawContent);
+		}
+
+		let content = rawContent as string;
+
+		if (content.length > limit) {
+			try {
+				content = await haste(content);
+			} catch {
+				const attachment = Buffer.from(content, "utf-8");
+				messageOptions.files!.push({ name: altFilename, attachment });
+				content = "Failed to create haste, so I attached the output as file instead. Consider changing hastebin mirror.";
+			}
+		} else {
+			content = `\`\`\`js\n${content}\n\`\`\``;
+		}
+
+		return content;
+	}
+
 	public async callback(ctx: CommandContext, { script }: { script: string }) {
 		// Shortcuts for use in eval command
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -67,40 +100,14 @@ export class Command extends NoelCommand {
 
 		const messageOptions: MessageOptions = { disableMentions: "all", files: [] };
 
-		async function formatOutput(rawContent: unknown, limit: number, altFilename: string) {
-			if (typeof rawContent !== "string") {
-				rawContent = inspect(rawContent);
-			}
-
-			let content = rawContent as string;
-
-			if (content.length > limit) {
-				try {
-					content = await haste(content);
-				} catch {
-					const attachment = Buffer.from(content, "utf-8");
-					messageOptions.files!.push({ name: altFilename, attachment });
-					content = "Failed to create haste, so I attached the output as file instead. Consider changing hastebin mirror.";
-				}
-			} else {
-				content = `\`\`\`js\n${content}\n\`\`\``;
-			}
-
-			return content;
-		}
-
-		result = await formatOutput(result, 2000, "NoelEvalOutput.txt");
-		const consoleOutput = await formatOutput(console._formatLines(), 400, "NoelEvalConsole.txt");
+		result = await this.formatOutput(result, 1900, messageOptions, "NoelEvalOutput.txt");
+		const consoleOutput = await this.formatOutput(console._formatLines(), 1000, messageOptions, "NoelEvalConsole.txt");
 
 		const time = asyncTime ? `⏱ ${asyncTime}<${syncTime}>` : `⏱ ${syncTime}`;
 
-		messageOptions.embed = new MessageEmbed()
-			.setAuthor("Noel Eval", client.user.displayAvatarURL())
-			.addFields([
-				{ name: "Result", value: result },
-				{ name: "Console", value: consoleOutput }
-			])
-			.setFooter(time);
+		messageOptions.embed = new MessageEmbed().setAuthor("Noel Eval", client.user.displayAvatarURL()).setDescription(result).setFooter(time);
+
+		if (consoleOutput) messageOptions.embed.addField("Console", consoleOutput);
 
 		ctx.reply(void 0, messageOptions);
 	}
