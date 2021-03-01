@@ -1,17 +1,14 @@
 import { Channel, Message, Role, User } from "discord.js";
 import validator from "validator";
-import { Command } from "./Command";
+import { NoelCommand } from "./Command";
 import { CommandContext } from "./CommandContext";
 import { channelParser, boolParser } from "../Util/parsers";
 
-export async function parseArgs(command: Command, ctx: CommandContext) {
+export async function parseArgs(command: NoelCommand, ctx: CommandContext) {
 	const output: CommandArgs = {};
 
 	const requiredArgs = command.args.filter(arg => hasFlag(arg, ArgumentFlags.Optional)).length;
-	if (ctx.rawArgs.length < requiredArgs)
-		throw new ArgumentError(
-			`Too little arguments. Expected ${requiredArgs} but only received ${ctx.rawArgs.length}.`
-		);
+	if (ctx.rawArgs.length < requiredArgs) throw new ArgumentError(`Too little arguments. Expected ${requiredArgs} but only received ${ctx.rawArgs.length}.`);
 
 	for (let i = 0, arg = command.args[i]; i < command.args.length; i++) {
 		const add = async (parser: (str: string) => Arg | null | Promise<Arg | null>) => {
@@ -31,9 +28,7 @@ export async function parseArgs(command: Command, ctx: CommandContext) {
 				if (err instanceof ArgumentError) throw err;
 
 				throw new ArgumentError(
-					`Wrong argument ${raw}. Expected ${
-						arg.explanation || ArgumentTypes[(arg.type as unknown) as keyof typeof ArgumentTypes]
-					}.`
+					`Wrong argument ${raw}. Expected ${arg.explanation || ArgumentTypes[(arg.type as unknown) as keyof typeof ArgumentTypes]}.`
 				);
 			}
 		};
@@ -67,6 +62,8 @@ export async function parseArgs(command: Command, ctx: CommandContext) {
 				break;
 		}
 	}
+
+	return output;
 }
 
 export enum ArgumentTypes {

@@ -27,8 +27,8 @@ export async function messageParser(channel: TextChannel, str: string) {
 
 export async function userParser(client: Client, str: string) {
 	try {
-		const id = str.match(mentionRegex)?.[1] || str;
-		if (snowflakeRegex.test(id)) {
+		const id = str.match(mentionRegex())?.[1] || str;
+		if (snowflakeRegex().test(id)) {
 			return await client.users.fetch(id);
 		} else {
 			// TODO
@@ -40,8 +40,8 @@ export async function userParser(client: Client, str: string) {
 
 export async function roleParser(guild: Guild, str: string) {
 	try {
-		const id = str.match(roleRegex)?.[1] || str;
-		if (snowflakeRegex.test(id)) {
+		const id = str.match(roleRegex())?.[1] || str;
+		if (snowflakeRegex().test(id)) {
 			return await guild.roles.fetch(id);
 		} else {
 			// TODO

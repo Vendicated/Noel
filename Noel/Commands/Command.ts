@@ -2,7 +2,7 @@ import { CommandContext } from "./CommandContext";
 import { CommandArgs, Arguments, ArgumentFlags, ArgumentTypes, parseArgs } from "./CommandArguments";
 import { PermissionString } from "discord.js";
 
-export abstract class Command {
+export abstract class NoelCommand {
 	public abstract name: string;
 	public abstract description: string;
 	public abstract args: Arguments;
@@ -13,7 +13,7 @@ export abstract class Command {
 	public abstract userPermissions: PermissionString[];
 	public abstract clientPermissions: PermissionString[];
 
-	public abstract callback: (ctx: CommandContext, args: CommandArgs) => Promise<void>;
+	public abstract callback(ctx: CommandContext, args: CommandArgs): Promise<void>;
 
 	public parseArgs(ctx: CommandContext) {
 		return parseArgs(this, ctx);

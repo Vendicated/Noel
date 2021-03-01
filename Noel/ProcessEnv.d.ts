@@ -3,6 +3,7 @@ declare namespace NodeJS {
 		POSTGRES_URI: string;
 		DISCORD_TOKEN: string;
 		COMMAND_PREFIX: string;
-		DEBUG: string;
+		HASTEBIN_MIRROR?: string;
+		DEBUG?: string;
 	}
 }
