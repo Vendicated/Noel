@@ -4,9 +4,9 @@
 	"description": "Yet Another Discord Bot",
 	"main": "dist/index.js",
 	"scripts": {
-		"build": "tsc",
-		"dev": "tsc && node .",
-		"dev:watch": "tsc --watch & nodemon",
+		"build": "tsc --build Noel",
+		"dev": "yarn build && node .",
+		"dev:watch": "yarn build --watch & nodemon",
 		"production": "export NODE_ENV=PRODUCTION && pm2 start . --name Noel",
 		"test": "echo \"Error: no test specified\" && exit 1"
 	},
