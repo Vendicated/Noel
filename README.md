@@ -1,3 +1,5 @@
+## WIP
+
 # Noel
 
 Discord Bot written in Typescript
