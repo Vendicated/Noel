@@ -26,7 +26,7 @@
 		"discord.js": "^12.5.1",
 		"dotenv": "^8.2.0",
 		"postgres": "^1.0.2",
-		"validator": "^13.5.2"
+		"validator": "^13.7.0"
 	},
 	"devDependencies": {
 		"@types/common-tags": "^1.8.0",
